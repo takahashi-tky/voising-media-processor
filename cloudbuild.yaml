@@ -1,0 +1,14 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'bash'
+  args:
+    - "-c"
+    - |
+      gcloud functions deploy CampersMediaProcessor \
+      --gen2 \
+      --runtime=go121 \
+      --region=asia-northeast1 \
+      --source=. \
+      --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" \
+      --trigger-event-filters="bucket=upload-iris-fc-dev-asia-northeast1" \
+      --entry-point=main
