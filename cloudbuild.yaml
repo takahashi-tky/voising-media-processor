@@ -4,7 +4,7 @@ steps:
   args:
     - "-c"
     - |
-      gcloud functions deploy CampersMediaProcessor \
+      gcloud functions deploy VoisingMediaProcessor \
       --gen2 \
       --runtime=go121 \
       --region=asia-northeast1 \
