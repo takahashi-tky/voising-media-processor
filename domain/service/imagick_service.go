@@ -2,7 +2,6 @@ package service
 
 import (
 	"bytes"
-	"cloud.google.com/go/storage"
 	"fmt"
 	"log"
 	"os/exec"
@@ -10,16 +9,22 @@ import (
 )
 
 type ImagickService interface {
-	GetFileFormat(*storage.Reader) (string, error)
-	ConvertResize(reader *storage.Reader, width uint, height uint) (buf bytes.Buffer, err error)
+	GetFileFormat(buffer *bytes.Buffer) (string, error)
+	ConvertResize(buffer *bytes.Buffer, width uint, height uint) (buf bytes.Buffer, err error)
+	ConvertFormat(buffer *bytes.Buffer, format string) (buf bytes.Buffer, err error)
 }
 
 type imagickService struct {
 }
 
-func (i *imagickService) ConvertResize(reader *storage.Reader, width uint, height uint) (buf bytes.Buffer, err error) {
+func (i *imagickService) ConvertFormat(buffer *bytes.Buffer, format string) (buf bytes.Buffer, err error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (i *imagickService) ConvertResize(buffer *bytes.Buffer, width uint, height uint) (buf bytes.Buffer, err error) {
 	cmd := exec.Command("convert", "-", "-resize", fmt.Sprintf("%dx%d", width, height), "-")
-	cmd.Stdin = reader
+	cmd.Stdin = buffer
 	cmd.Stdout = &buf
 	err = cmd.Run()
 	if err != nil {
@@ -28,17 +33,16 @@ func (i *imagickService) ConvertResize(reader *storage.Reader, width uint, heigh
 	return buf, err
 }
 
-func (i *imagickService) GetFileFormat(reader *storage.Reader) (string, error) {
+func (i *imagickService) GetFileFormat(buffer *bytes.Buffer) (string, error) {
 	var stdout bytes.Buffer
 	cmd := exec.Command("identify", "-")
-	cmd.Stdin = reader
+	cmd.Stdin = buffer
 	cmd.Stdout = &stdout
 	err := cmd.Run()
 	if err != nil {
 		return "", err
 	}
-	log.Println(stdout.String())
-	return strings.Split(stdout.String(), " ")[0], err
+	return strings.ToLower(strings.Split(stdout.String(), " ")[1]), err
 }
 
 func NewImagickService() ImagickService {

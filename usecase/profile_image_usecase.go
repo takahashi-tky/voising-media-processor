@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"bytes"
 	"irelove.ireisu.com/domain/service"
 	"log"
 )
@@ -21,15 +22,16 @@ type profileImageUseCase struct {
 }
 
 func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string) (err error) {
-	reader, err := p.gcsService.GetObjectReader(bucket, name)
+	blob, err := p.gcsService.GetObjectBlob(bucket, name)
 	if err != nil {
 		return err
 	}
-	format, err := p.imagickService.GetFileFormat(reader)
+	format, err := p.imagickService.GetFileFormat(bytes.NewBuffer(blob))
 	if err != nil {
 		return err
 	}
-	//newImage, err := p.imagickService.ConvertResize(reader, ProfileImageWidth, ProfileImageHeight)
+	//newImageBuffer, err := p.imagickService.ConvertResize(bytes.NewBuffer(blob), ProfileImageWidth, ProfileImageHeight)
+
 	log.Println(format)
 	return nil
 }

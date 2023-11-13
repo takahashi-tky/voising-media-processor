@@ -24,16 +24,12 @@ func main(_ context.Context, e event.Event) error {
 	if err := protojson.Unmarshal(e.Data(), &gcsEvent); err != nil {
 		return fmt.Errorf("protojson.Unmarshal: failed to decode event data: %w", err)
 	}
-	log.Println(gcsEvent.Bucket)
-	log.Println(gcsEvent.Name)
 	gcsService := service.NewGCSService(ctx)
 	imagickService := service.NewImagickService()
 
 	switch {
 	case strings.HasPrefix(gcsEvent.Name, "profiles"):
-		log.Println("Start profile image process")
 		profileImageUserCase := usecase.NewProfileImageUseCase(gcsService, imagickService)
-		log.Println("Profile image process")
 		err := profileImageUserCase.ProfileImageProcess(gcsEvent.Bucket, gcsEvent.Name)
 		if err != nil {
 			return fmt.Errorf("profile image process error: %v", err)
