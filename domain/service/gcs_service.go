@@ -23,6 +23,7 @@ type gcsService struct {
 
 func (g *gcsService) GetObjectReader(bucket string, name string) (*storage.Reader, error) {
 	bucketH := g.storageClient.Bucket(bucket)
+	log.Println(bucketH)
 	it := bucketH.Objects(*g.ctx, nil)
 	for {
 		attrs, err := it.Next()
