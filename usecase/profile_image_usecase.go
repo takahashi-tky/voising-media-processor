@@ -29,6 +29,7 @@ func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string) (e
 	if err != nil {
 		return err
 	}
+	//newImage, err := p.imagickService.ConvertResize(reader, ProfileImageWidth, ProfileImageHeight)
 	log.Println(format)
 	return nil
 }

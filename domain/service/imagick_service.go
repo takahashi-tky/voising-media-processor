@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cloud.google.com/go/storage"
 	"fmt"
+	"log"
 	"os/exec"
 	"strings"
 )
@@ -34,6 +35,7 @@ func (i *imagickService) GetFileFormat(reader *storage.Reader) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	log.Println(string(result))
 	return strings.Split(string(result), " ")[1], err
 }
 
