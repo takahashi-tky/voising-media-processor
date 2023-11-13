@@ -2,8 +2,9 @@ package usecase
 
 import (
 	"bytes"
+	"fmt"
 	"irelove.ireisu.com/domain/service"
-	"log"
+	"os"
 )
 
 const (
@@ -26,14 +27,20 @@ func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string) (e
 	if err != nil {
 		return err
 	}
-	format, err := p.imagickService.GetFileFormat(bytes.NewBuffer(blob))
+	newImageBuffer, err := p.imagickService.ConvertResize(bytes.NewBuffer(blob), ProfileImageWidth, ProfileImageHeight)
+	newImageBuffer, err = p.imagickService.ConvertFormat(&newImageBuffer, ProfileImageFormat)
 	if err != nil {
 		return err
 	}
-	//newImageBuffer, err := p.imagickService.ConvertResize(bytes.NewBuffer(blob), ProfileImageWidth, ProfileImageHeight)
-
-	log.Println(format)
-	return nil
+	err = p.gcsService.CreateObject(newImageBuffer.Bytes(), os.Getenv("DEST_BUCKET"), name+"."+ProfileImageFormat, fmt.Sprintf("image/%s", ProfileImageFormat))
+	if err != nil {
+		return err
+	}
+	err = p.gcsService.DeleteObject(bucket, name)
+	if err != nil {
+		return err
+	}
+	return err
 }
 
 func NewProfileImageUseCase(gcsService service.GCSService, imagickService service.ImagickService) ProfileImageUseCase {
