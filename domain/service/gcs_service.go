@@ -9,6 +9,7 @@ import (
 )
 
 type GCSService interface {
+	GetObjectReader(bucket string, name string) (*storage.Reader, error)
 	GetObjectBlob(bucket string, name string) ([]byte, error)
 	CreateObject(blob []byte, destBucket string, name string, contentType string) error
 	DeleteObject(bucket string, name string) error
@@ -17,6 +18,11 @@ type GCSService interface {
 type gcsService struct {
 	ctx           *context.Context
 	storageClient *storage.Client
+}
+
+func (g *gcsService) GetObjectReader(bucket string, name string) (*storage.Reader, error) {
+	obj := g.storageClient.Bucket(bucket).Object(name)
+	return obj.NewReader(*g.ctx)
 }
 
 func (g *gcsService) DeleteObject(bucket string, name string) error {

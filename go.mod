@@ -8,7 +8,6 @@ require (
 	github.com/cloudevents/sdk-go/v2 v2.14.0
 	github.com/googleapis/google-cloudevents-go v0.7.0
 	google.golang.org/protobuf v1.31.0
-	gopkg.in/gographics/imagick.v3 v3.5.0
 )
 
 require (

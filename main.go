@@ -25,7 +25,6 @@ func main(_ context.Context, e event.Event) error {
 
 	gcsService := service.NewGCSService(ctx)
 	imagickService := service.NewImagickService()
-	defer imagickService.Close()
 
 	switch {
 	case strings.HasPrefix(gcsEvent.Name, "profiles"):
