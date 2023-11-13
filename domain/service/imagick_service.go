@@ -42,5 +42,6 @@ func (i *imagickService) GetFileFormat(reader *storage.Reader) (string, error) {
 }
 
 func NewImagickService() ImagickService {
+	log.Println("NewImagickService")
 	return &imagickService{}
 }

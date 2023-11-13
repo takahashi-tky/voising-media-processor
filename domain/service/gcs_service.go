@@ -76,6 +76,7 @@ func (g *gcsService) GetObjectBlob(bucket string, name string) (bytes []byte, er
 }
 
 func NewGCSService(ctx context.Context) GCSService {
+	log.Println("NewGCSService")
 	storageClient, err := storage.NewClient(ctx)
 	if err != nil {
 		log.Fatalf("storage.NewClient: %v", err)
