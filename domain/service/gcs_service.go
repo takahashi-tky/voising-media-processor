@@ -4,6 +4,7 @@ import (
 	"cloud.google.com/go/storage"
 	"context"
 	"fmt"
+	"google.golang.org/api/iterator"
 	"io"
 	"log"
 )
@@ -21,6 +22,18 @@ type gcsService struct {
 }
 
 func (g *gcsService) GetObjectReader(bucket string, name string) (*storage.Reader, error) {
+	bucketH := g.storageClient.Bucket(bucket)
+	it := bucketH.Objects(*g.ctx, nil)
+	for {
+		attrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, fmt.Errorf("Bucket(%q).Objects: %w", bucketH, err)
+		}
+		log.Println(attrs.Name)
+	}
 	obj := g.storageClient.Bucket(bucket).Object(name)
 	return obj.NewReader(*g.ctx)
 }
