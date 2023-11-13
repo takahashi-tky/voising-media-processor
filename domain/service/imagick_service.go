@@ -29,14 +29,16 @@ func (i *imagickService) ConvertResize(reader *storage.Reader, width uint, heigh
 }
 
 func (i *imagickService) GetFileFormat(reader *storage.Reader) (string, error) {
+	var stdout bytes.Buffer
 	cmd := exec.Command("identify", "-")
 	cmd.Stdin = reader
-	result, err := cmd.Output()
+	cmd.Stdout = &stdout
+	err := cmd.Run()
 	if err != nil {
 		return "", err
 	}
-	log.Println(string(result))
-	return strings.Split(string(result), " ")[1], err
+	log.Println(stdout.String())
+	return strings.Split(stdout.String(), " ")[0], err
 }
 
 func NewImagickService() ImagickService {
