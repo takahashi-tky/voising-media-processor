@@ -35,9 +35,9 @@ func main(_ context.Context, e event.Event) error {
 		if err != nil {
 			return fmt.Errorf("profile image process error: %v", err)
 		}
-	case strings.HasPrefix(strings.Split(gcsEvent.Name, "/")[0]+"/"+strings.Split(gcsEvent.Name, "/")[2], "reports/cover"):
+	case strings.HasPrefix(strings.Split(gcsEvent.Name, "/")[0]+"/"+gcsEvent.Name, "reports/cover"):
 		fmt.Println("cover")
-	case strings.HasPrefix(strings.Split(gcsEvent.Name, "/")[0]+"/"+strings.Split(gcsEvent.Name, "/")[2], "reports/content"):
+	case strings.HasPrefix(strings.Split(gcsEvent.Name, "/")[0]+"/"+gcsEvent.Name, "reports/content"):
 		fmt.Println("content")
 	default:
 		return fmt.Errorf("object name is not match: %v", gcsEvent.Name)
