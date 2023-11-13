@@ -22,7 +22,6 @@ func main(_ context.Context, e event.Event) error {
 	if err := protojson.Unmarshal(e.Data(), &gcsEvent); err != nil {
 		return fmt.Errorf("protojson.Unmarshal: failed to decode event data: %w", err)
 	}
-
 	gcsService := service.NewGCSService(ctx)
 	imagickService := service.NewImagickService()
 

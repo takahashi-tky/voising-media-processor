@@ -29,7 +29,7 @@ func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string) (e
 	if err != nil {
 		return err
 	}
-	log.Fatal(format)
+	log.Println(format)
 	return nil
 }
 
