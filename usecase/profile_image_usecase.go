@@ -1,8 +1,8 @@
 package usecase
 
 import (
+	"irelove.ireisu.com/domain/service"
 	"os"
-	"voising/domain/service"
 )
 
 const (

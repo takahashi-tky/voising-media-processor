@@ -1,4 +1,4 @@
-module voising
+module irelove.ireisu.com
 
 go 1.21
 
