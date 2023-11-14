@@ -1,3 +1,4 @@
 .idea/
 .git
-.cloudbuild.yaml
+./cloudbuild.yaml
+./proto_gen.sh

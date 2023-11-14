@@ -9,6 +9,8 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"irelove.ireisu.com/domain/service"
 	"irelove.ireisu.com/usecase"
+	"log"
+	"strconv"
 	"strings"
 )
 
@@ -24,11 +26,17 @@ func main(_ context.Context, e event.Event) error {
 	}
 	gcsService := service.NewGCSService(ctx)
 	imagickService := service.NewImagickService()
-
+	voisingFcAPIService := service.NewVoisingFcAPIService()
+	log.Println(gcsEvent.Metadata)
+	userImageId, err := strconv.Atoi(gcsEvent.Metadata["user-image-id"])
+	if err != nil {
+		return fmt.Errorf("user-image-id is not number: %v", gcsEvent.Metadata["user-image-id"])
+	}
 	switch {
 	case strings.HasPrefix(gcsEvent.Name, "profiles"):
-		profileImageUserCase := usecase.NewProfileImageUseCase(gcsService, imagickService)
-		err := profileImageUserCase.ProfileImageProcess(gcsEvent.Bucket, gcsEvent.Name)
+		log.Println(gcsEvent.Metadata)
+		profileImageUserCase := usecase.NewProfileImageUseCase(gcsService, imagickService, voisingFcAPIService)
+		err := profileImageUserCase.ProfileImageProcess(gcsEvent.Bucket, gcsEvent.Name, uint32(userImageId))
 		if err != nil {
 			return fmt.Errorf("profile image process error: %v", err)
 		}

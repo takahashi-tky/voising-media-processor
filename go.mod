@@ -7,6 +7,9 @@ require (
 	github.com/GoogleCloudPlatform/functions-framework-go v1.8.0
 	github.com/cloudevents/sdk-go/v2 v2.14.0
 	github.com/googleapis/google-cloudevents-go v0.7.0
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3
+	google.golang.org/genproto/googleapis/api v0.0.0-20230629202037-9506855d4529
+	google.golang.org/grpc v1.56.2
 	google.golang.org/protobuf v1.31.0
 )
 
@@ -38,7 +41,5 @@ require (
 	google.golang.org/api v0.126.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230706204954-ccb25ca9f130 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20230629202037-9506855d4529 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230629202037-9506855d4529 // indirect
-	google.golang.org/grpc v1.56.2 // indirect
 )

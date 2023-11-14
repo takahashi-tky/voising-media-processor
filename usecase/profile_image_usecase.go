@@ -3,6 +3,7 @@ package usecase
 import (
 	"bytes"
 	"fmt"
+	"irelove.ireisu.com/api/proto/gen/media"
 	"irelove.ireisu.com/domain/service"
 	"os"
 )
@@ -14,15 +15,20 @@ const (
 )
 
 type ProfileImageUseCase interface {
-	ProfileImageProcess(bucket string, name string) (err error)
+	ProfileImageProcess(bucket string, name string, userImageId uint32) (err error)
 }
 
 type profileImageUseCase struct {
-	gcsService     service.GCSService
-	imagickService service.ImagickService
+	gcsService          service.GCSService
+	imagickService      service.ImagickService
+	voisingFcAPIService service.VoisingFcAPIService
 }
 
-func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string) (err error) {
+func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string, userImageId uint32) (err error) {
+	err = p.voisingFcAPIService.PatchUserImageStatus(userImageId, media.UserImageStatus_PROCEED)
+	if err != nil {
+		return err
+	}
 	blob, err := p.gcsService.GetObjectBlob(bucket, name)
 	if err != nil {
 		return err
@@ -36,16 +42,25 @@ func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string) (e
 	if err != nil {
 		return err
 	}
+	err = p.voisingFcAPIService.PatchUserImageName(userImageId, name+"."+ProfileImageFormat)
+	if err != nil {
+		return err
+	}
 	err = p.gcsService.DeleteObject(bucket, name)
+	if err != nil {
+		return err
+	}
+	err = p.voisingFcAPIService.PatchUserImageStatus(userImageId, media.UserImageStatus_COMPLETED)
 	if err != nil {
 		return err
 	}
 	return err
 }
 
-func NewProfileImageUseCase(gcsService service.GCSService, imagickService service.ImagickService) ProfileImageUseCase {
+func NewProfileImageUseCase(gcsService service.GCSService, imagickService service.ImagickService, voisingFcAPIService service.VoisingFcAPIService) ProfileImageUseCase {
 	return &profileImageUseCase{
-		gcsService:     gcsService,
-		imagickService: imagickService,
+		gcsService:          gcsService,
+		imagickService:      imagickService,
+		voisingFcAPIService: voisingFcAPIService,
 	}
 }
