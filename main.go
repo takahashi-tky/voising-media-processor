@@ -34,7 +34,6 @@ func main(_ context.Context, e event.Event) error {
 	}
 	switch {
 	case strings.HasPrefix(gcsEvent.Name, "profiles"):
-		log.Println(gcsEvent.Metadata)
 		profileImageUserCase := usecase.NewProfileImageUseCase(gcsService, imagickService, voisingFcAPIService)
 		err := profileImageUserCase.ProfileImageProcess(gcsEvent.Bucket, gcsEvent.Name, uint32(userImageId))
 		if err != nil {

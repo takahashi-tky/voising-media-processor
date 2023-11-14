@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"google.golang.org/api/idtoken"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"irelove.ireisu.com/api/proto/gen/media"
 	"os"
@@ -60,7 +62,7 @@ func (v *voisingFcAPIService) PatchUserImageStatus(userImageId uint32, status me
 
 func getAuthContext() (ctx context.Context, cancel context.CancelFunc, err error) {
 	ctx, cancel = context.WithTimeout(context.Background(), 30*time.Second)
-	tokenSource, err := idtoken.NewTokenSource(ctx, os.Getenv("GRPC_SERVER_ADDRESS"))
+	tokenSource, err := idtoken.NewTokenSource(ctx, os.Getenv("GRPC_SERVER_AUDIENCE"))
 	if err != nil {
 		cancel()
 		return nil, nil, fmt.Errorf("idtoken.NewTokenSource: %w", err)
@@ -79,10 +81,18 @@ func (v *voisingFcAPIService) Close() error {
 }
 
 func NewVoisingFcAPIService() VoisingFcAPIService {
-	apiServerAddress := os.Getenv("GRPC_SERVER_ADDRESS")
-	conn, err := grpc.Dial(apiServerAddress,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock())
+	apiServerHost := os.Getenv("GRPC_SERVER_HOST")
+	var opts []grpc.DialOption
+	opts = append(opts, grpc.WithAuthority(apiServerHost))
+	systemRoots, err := x509.SystemCertPool()
+	if err != nil {
+		panic(err)
+	}
+	cred := credentials.NewTLS(&tls.Config{
+		RootCAs: systemRoots,
+	})
+	opts = append(opts, grpc.WithTransportCredentials(cred))
+	conn, err := grpc.Dial(apiServerHost, opts...)
 	if err != nil {
 		panic(err)
 	}

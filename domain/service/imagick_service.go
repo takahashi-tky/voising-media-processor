@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os/exec"
 	"strings"
 )
@@ -52,6 +51,5 @@ func (i *imagickService) GetFileFormat(buffer *bytes.Buffer) (string, error) {
 }
 
 func NewImagickService() ImagickService {
-	log.Println("NewImagickService")
 	return &imagickService{}
 }
