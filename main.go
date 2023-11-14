@@ -9,7 +9,6 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"irelove.ireisu.com/domain/service"
 	"irelove.ireisu.com/usecase"
-	"log"
 	"strings"
 )
 
@@ -18,7 +17,6 @@ func init() {
 }
 
 func main(_ context.Context, e event.Event) error {
-	log.Println("Start processing")
 	ctx := context.Background()
 	var gcsEvent storagedata.StorageObjectData
 	if err := protojson.Unmarshal(e.Data(), &gcsEvent); err != nil {

@@ -4,13 +4,11 @@ import (
 	"cloud.google.com/go/storage"
 	"context"
 	"fmt"
-	"google.golang.org/api/iterator"
 	"io"
 	"log"
 )
 
 type GCSService interface {
-	GetObjectReader(bucket string, name string) (*storage.Reader, error)
 	GetObjectBlob(bucket string, name string) ([]byte, error)
 	CreateObject(blob []byte, destBucket string, name string, contentType string) error
 	DeleteObject(bucket string, name string) error
@@ -19,24 +17,6 @@ type GCSService interface {
 type gcsService struct {
 	ctx           *context.Context
 	storageClient *storage.Client
-}
-
-func (g *gcsService) GetObjectReader(bucket string, name string) (*storage.Reader, error) {
-	bucketH := g.storageClient.Bucket(bucket)
-	log.Println(bucketH)
-	it := bucketH.Objects(*g.ctx, nil)
-	for {
-		attrs, err := it.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			return nil, fmt.Errorf("Bucket(%q).Objects: %w", bucketH, err)
-		}
-		log.Println(attrs.Name)
-	}
-	obj := g.storageClient.Bucket(bucket).Object(name)
-	return obj.NewReader(*g.ctx)
 }
 
 func (g *gcsService) DeleteObject(bucket string, name string) error {
@@ -76,7 +56,6 @@ func (g *gcsService) GetObjectBlob(bucket string, name string) (bytes []byte, er
 }
 
 func NewGCSService(ctx context.Context) GCSService {
-	log.Println("NewGCSService")
 	storageClient, err := storage.NewClient(ctx)
 	if err != nil {
 		log.Fatalf("storage.NewClient: %v", err)
