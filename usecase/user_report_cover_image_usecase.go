@@ -38,7 +38,7 @@ func (u *userReportCoverUseCase) UserReportCoverProcess(bucket string, name stri
 	}
 
 	switch objectFormat {
-	case "jpeg", "jpg", "png", "gif":
+	case "jpeg", "jpg", "png", "gif", "webp":
 	default:
 		return fmt.Errorf(fmt.Sprintf("object format is not match: %s", objectFormat))
 	}
