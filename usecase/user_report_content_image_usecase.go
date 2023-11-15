@@ -40,7 +40,7 @@ func (u *userReportContentImageUseCase) UserReportContentImageProcess(bucket str
 	default:
 		return fmt.Errorf(fmt.Sprintf("object format is not match: %s", objectFormat))
 	}
-	err = u.gcsService.CreateObject(bytes.NewBuffer(blob).Bytes(), os.Getenv("DEST_BUCKET"), name+"."+objectFormat, fmt.Sprintf("image/%s", objectFormat))
+	err = u.gcsService.CreateObject(buffer.Bytes(), os.Getenv("DEST_BUCKET"), name+"."+objectFormat, fmt.Sprintf("image/%s", objectFormat))
 	if err != nil {
 		return err
 	}
