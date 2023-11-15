@@ -27,7 +27,7 @@ func main(_ context.Context, e event.Event) error {
 	gcsService := service.NewGCSService(ctx)
 	imagickService := service.NewImagickService()
 	voisingFcAPIService := service.NewVoisingFcAPIService()
-	log.Println(gcsEvent.Metadata)
+	log.Println(gcsEvent)
 	userImageId, err := strconv.Atoi(gcsEvent.Metadata["user-image-id"])
 	if err != nil {
 		return fmt.Errorf("user-image-id is not number: %v", gcsEvent.Metadata["user-image-id"])
