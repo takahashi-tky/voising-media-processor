@@ -32,7 +32,6 @@ func (u *userReportCoverUseCase) UserReportCoverProcess(bucket string, name stri
 	if err != nil {
 		return err
 	}
-
 	objectFormat, err := u.imagickService.GetFileFormat(&buffer)
 	if err != nil {
 		return err
@@ -47,7 +46,7 @@ func (u *userReportCoverUseCase) UserReportCoverProcess(bucket string, name stri
 	if err != nil {
 		return err
 	}
-	err = u.gcsService.DeleteObject(bucket, name)
+	//err = u.gcsService.DeleteObject(bucket, name)
 	if err != nil {
 		return err
 	}
