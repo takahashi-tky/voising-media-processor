@@ -27,7 +27,16 @@ func (u *userReportCoverUseCase) UserReportCoverProcess(bucket string, name stri
 	if err != nil {
 		return err
 	}
-	objectFormat, err := u.imagickService.GetFileFormat(bytes.NewBuffer(blob))
+
+	buffer, err := u.imagickService.DecodeBase64(bytes.NewBuffer(blob))
+	if err != nil {
+		return err
+	}
+
+	objectFormat, err := u.imagickService.GetFileFormat(&buffer)
+	if err != nil {
+		return err
+	}
 
 	switch objectFormat {
 	case "jpeg", "jpg", "png", "gif":

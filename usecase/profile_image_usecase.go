@@ -33,7 +33,11 @@ func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string, us
 	if err != nil {
 		return err
 	}
-	newImageBuffer, err := p.imagickService.ConvertResize(bytes.NewBuffer(blob), ProfileImageWidth, ProfileImageHeight)
+	buffer, err := p.imagickService.DecodeBase64(bytes.NewBuffer(blob))
+	if err != nil {
+		return err
+	}
+	newImageBuffer, err := p.imagickService.ConvertResize(&buffer, ProfileImageWidth, ProfileImageHeight)
 	newImageBuffer, err = p.imagickService.ConvertFormat(&newImageBuffer, ProfileImageFormat)
 	if err != nil {
 		return err

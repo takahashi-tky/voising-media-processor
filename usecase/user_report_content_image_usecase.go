@@ -27,7 +27,13 @@ func (u *userReportContentImageUseCase) UserReportContentImageProcess(bucket str
 	if err != nil {
 		return err
 	}
-	objectFormat, err := u.imagickService.GetFileFormat(bytes.NewBuffer(blob))
+
+	buffer, err := u.imagickService.DecodeBase64(bytes.NewBuffer(blob))
+	if err != nil {
+		return err
+	}
+
+	objectFormat, err := u.imagickService.GetFileFormat(&buffer)
 
 	switch objectFormat {
 	case "jpeg", "jpg", "png", "gif":

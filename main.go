@@ -23,9 +23,11 @@ func main(_ context.Context, e event.Event) error {
 	if err := protojson.Unmarshal(e.Data(), &gcsEvent); err != nil {
 		return fmt.Errorf("protojson.Unmarshal: failed to decode event data: %w", err)
 	}
+
 	gcsService := service.NewGCSService(ctx)
 	imagickService := service.NewImagickService()
 	voisingFcAPIService := service.NewVoisingFcAPIService()
+
 	objectMetadata, err := gcsService.GetObjectMetaData(gcsEvent.Bucket, gcsEvent.Name)
 	if err != nil {
 		return fmt.Errorf("get object metadata error: %v", err)
@@ -39,6 +41,7 @@ func main(_ context.Context, e event.Event) error {
 	if err != nil {
 		return fmt.Errorf("user-image-id is not number")
 	}
+
 	switch {
 	case strings.HasPrefix(gcsEvent.Name, "profiles"):
 		profileImageUserCase := usecase.NewProfileImageUseCase(gcsService, imagickService, voisingFcAPIService)
