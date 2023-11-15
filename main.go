@@ -9,7 +9,6 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"irelove.ireisu.com/domain/service"
 	"irelove.ireisu.com/usecase"
-	"log"
 	"strconv"
 	"strings"
 )
@@ -27,10 +26,18 @@ func main(_ context.Context, e event.Event) error {
 	gcsService := service.NewGCSService(ctx)
 	imagickService := service.NewImagickService()
 	voisingFcAPIService := service.NewVoisingFcAPIService()
-	log.Println(gcsEvent)
-	userImageId, err := strconv.Atoi(gcsEvent.Metadata["user-image-id"])
+	objectMetadata, err := gcsService.GetObjectMetaData(gcsEvent.Bucket, gcsEvent.Name)
 	if err != nil {
-		return fmt.Errorf("user-image-id is not number: %v", gcsEvent.Metadata["user-image-id"])
+		return fmt.Errorf("get object metadata error: %v", err)
+	}
+
+	userImageIdStr, exists := objectMetadata["user-image-id"]
+	if !exists {
+		return fmt.Errorf("user-image-id is not exists")
+	}
+	userImageId, err := strconv.Atoi(userImageIdStr)
+	if err != nil {
+		return fmt.Errorf("user-image-id is not number")
 	}
 	switch {
 	case strings.HasPrefix(gcsEvent.Name, "profiles"):

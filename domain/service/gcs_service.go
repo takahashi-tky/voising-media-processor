@@ -10,6 +10,7 @@ import (
 
 type GCSService interface {
 	GetObjectBlob(bucket string, name string) ([]byte, error)
+	GetObjectMetaData(bucket string, name string) (metadata map[string]string, err error)
 	CreateObject(blob []byte, destBucket string, name string, contentType string) error
 	DeleteObject(bucket string, name string) error
 }
@@ -17,6 +18,15 @@ type GCSService interface {
 type gcsService struct {
 	ctx           *context.Context
 	storageClient *storage.Client
+}
+
+func (g *gcsService) GetObjectMetaData(bucket string, name string) (metadata map[string]string, err error) {
+	obj := g.storageClient.Bucket(bucket).Object(name)
+	attrs, err := obj.Attrs(*g.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return attrs.Metadata, err
 }
 
 func (g *gcsService) DeleteObject(bucket string, name string) error {
