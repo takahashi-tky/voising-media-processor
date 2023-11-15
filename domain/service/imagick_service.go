@@ -34,6 +34,7 @@ func (i *imagickService) DecodeBase64(buffer *bytes.Buffer) (buf bytes.Buffer, e
 		cmd.Stdout = &buf
 		err = cmd.Run()
 		if err != nil {
+			log.Println("Error convert inline:-")
 			return bytes.Buffer{}, fmt.Errorf("cmd.Run: %w", err)
 		}
 		return buf, err

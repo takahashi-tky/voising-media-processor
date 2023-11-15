@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"irelove.ireisu.com/api/proto/gen/media"
 	"irelove.ireisu.com/domain/service"
+	"log"
 	"os"
 )
 
@@ -37,6 +38,7 @@ func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string, us
 	if err != nil {
 		return err
 	}
+	log.Println("Decode Success")
 	newImageBuffer, err := p.imagickService.ConvertResize(&buffer, ProfileImageWidth, ProfileImageHeight)
 	newImageBuffer, err = p.imagickService.ConvertFormat(&newImageBuffer, ProfileImageFormat)
 	if err != nil {
