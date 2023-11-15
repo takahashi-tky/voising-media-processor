@@ -62,6 +62,7 @@ func (g *gcsService) GetObjectBlob(bucket string, name string) (bytes []byte, er
 	if err != nil {
 		return nil, fmt.Errorf("io.ReadAll: %v", err)
 	}
+	log.Println(blob)
 	return blob, nil
 }
 
