@@ -8,17 +8,17 @@ import (
 	"os"
 )
 
-type UserReportCoverUseCase interface {
-	UserReportCoverProcess(bucket string, name string, userImageId uint32) (err error)
+type UserReportContentImageUseCase interface {
+	UserReportContentImageProcess(bucket string, name string, userImageId uint32) (err error)
 }
 
-type userReportCoverUseCase struct {
+type userReportContentImageUseCase struct {
 	gcsService          service.GCSService
 	imagickService      service.ImagickService
 	voisingFcAPIService service.VoisingFcAPIService
 }
 
-func (u *userReportCoverUseCase) UserReportCoverProcess(bucket string, name string, userImageId uint32) (err error) {
+func (u *userReportContentImageUseCase) UserReportContentImageProcess(bucket string, name string, userImageId uint32) (err error) {
 	err = u.voisingFcAPIService.PatchUserImageStatus(userImageId, media.UserImageStatus_PROCEED)
 	if err != nil {
 		return err
@@ -53,8 +53,8 @@ func (u *userReportCoverUseCase) UserReportCoverProcess(bucket string, name stri
 	return err
 }
 
-func NewUserReportCoverUseCase(gcsService service.GCSService, imagickService service.ImagickService, voisingFcAPIService service.VoisingFcAPIService) UserReportCoverUseCase {
-	return &userReportCoverUseCase{
+func NewUserReportContentImageUseCase(gcsService service.GCSService, imagickService service.ImagickService, voisingFcAPIService service.VoisingFcAPIService) UserReportContentImageUseCase {
+	return &userReportContentImageUseCase{
 		gcsService:          gcsService,
 		imagickService:      imagickService,
 		voisingFcAPIService: voisingFcAPIService,

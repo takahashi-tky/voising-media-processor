@@ -47,9 +47,17 @@ func main(_ context.Context, e event.Event) error {
 			return fmt.Errorf("profile image process error: %v", err)
 		}
 	case strings.HasPrefix(strings.Split(gcsEvent.Name, "/")[0]+"/"+gcsEvent.Name, "reports/cover"):
-		fmt.Println("cover")
+		userReportCoverUseCase := usecase.NewUserReportCoverUseCase(gcsService, imagickService, voisingFcAPIService)
+		err := userReportCoverUseCase.UserReportCoverProcess(gcsEvent.Bucket, gcsEvent.Name, uint32(userImageId))
+		if err != nil {
+			return fmt.Errorf("user report cover process error: %v", err)
+		}
 	case strings.HasPrefix(strings.Split(gcsEvent.Name, "/")[0]+"/"+gcsEvent.Name, "reports/content"):
-		fmt.Println("content")
+		userReportContentImageUseCase := usecase.NewUserReportContentImageUseCase(gcsService, imagickService, voisingFcAPIService)
+		err := userReportContentImageUseCase.UserReportContentImageProcess(gcsEvent.Bucket, gcsEvent.Name, uint32(userImageId))
+		if err != nil {
+			return fmt.Errorf("user report content image process error: %v", err)
+		}
 	default:
 		return fmt.Errorf("object name is not match: %v", gcsEvent.Name)
 	}
