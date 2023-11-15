@@ -34,6 +34,9 @@ func (u *userReportContentImageUseCase) UserReportContentImageProcess(bucket str
 	}
 
 	objectFormat, err := u.imagickService.GetFileFormat(&buffer)
+	if err != nil {
+		return err
+	}
 
 	switch objectFormat {
 	case "jpeg", "jpg", "png", "gif":
