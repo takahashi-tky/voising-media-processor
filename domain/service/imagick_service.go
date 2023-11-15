@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os/exec"
 	"strings"
 )
@@ -15,17 +16,17 @@ type ImagickService interface {
 }
 
 type imagickService struct {
-	isBase64 bool
 }
 
 func (i *imagickService) DecodeBase64(buffer *bytes.Buffer) (buf bytes.Buffer, err error) {
-	if strings.Index(buffer.String(), ";base64,") > 0 {
+	if strings.Index(buffer.String(), ";base64,") >= 0 {
 		var stdout bytes.Buffer
 		cmd := exec.Command("identify", "inline:-")
 		cmd.Stdin = buffer
 		cmd.Stdout = &stdout
 		err = cmd.Run()
 		if err != nil {
+			log.Println("Error identify inline:-")
 			return bytes.Buffer{}, fmt.Errorf("cmd.Run: %w", err)
 		}
 		cmd = exec.Command("convert", "inline:-", strings.Split(stdout.String(), " ")[1]+":-")
@@ -76,7 +77,5 @@ func (i *imagickService) GetFileFormat(buffer *bytes.Buffer) (string, error) {
 }
 
 func NewImagickService() ImagickService {
-	return &imagickService{
-		isBase64: false,
-	}
+	return &imagickService{}
 }
