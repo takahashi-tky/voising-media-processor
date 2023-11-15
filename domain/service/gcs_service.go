@@ -3,9 +3,11 @@ package service
 import (
 	"cloud.google.com/go/storage"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"log"
+	"strings"
 )
 
 type GCSService interface {
@@ -62,7 +64,12 @@ func (g *gcsService) GetObjectBlob(bucket string, name string) (bytes []byte, er
 	if err != nil {
 		return nil, fmt.Errorf("io.ReadAll: %v", err)
 	}
-	log.Println(blob)
+	if strings.Index(string(blob), ";base64,") > 0 {
+		blob, err = base64.StdEncoding.DecodeString(string(blob))
+		if err != nil {
+			return nil, fmt.Errorf("base64.StdEncoding.DecodeString: %v", err)
+		}
+	}
 	return blob, nil
 }
 
