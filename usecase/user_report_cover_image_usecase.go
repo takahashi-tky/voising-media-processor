@@ -46,7 +46,7 @@ func (u *userReportCoverUseCase) UserReportCoverProcess(bucket string, name stri
 	if err != nil {
 		return err
 	}
-	//err = u.gcsService.DeleteObject(bucket, name)
+	err = u.gcsService.DeleteObject(bucket, name)
 	if err != nil {
 		return err
 	}
