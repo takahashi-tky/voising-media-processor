@@ -68,7 +68,7 @@ func (i *imagickService) ConvertResize(buffer *bytes.Buffer, width uint, height 
 func (i *imagickService) GetFileFormat(buffer *bytes.Buffer) (string, error) {
 	var stdout bytes.Buffer
 	cmd := exec.Command("identify", "-")
-	cmd.Stdin = buffer
+	cmd.Stdin = &(*buffer)
 	cmd.Stdout = &stdout
 	err := cmd.Run()
 	if err != nil {
