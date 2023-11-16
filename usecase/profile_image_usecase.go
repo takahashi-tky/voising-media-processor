@@ -15,7 +15,7 @@ const (
 )
 
 type ProfileImageUseCase interface {
-	ProfileImageProcess(bucket string, name string, userImageId uint32) (err error)
+	ProfileImageProcess(bucket string, name string, userImageId uint32, userId uint32) (err error)
 }
 
 type profileImageUseCase struct {
@@ -24,7 +24,7 @@ type profileImageUseCase struct {
 	voisingFcAPIService service.VoisingFcAPIService
 }
 
-func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string, userImageId uint32) (err error) {
+func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string, userImageId uint32, userId uint32) (err error) {
 	err = p.voisingFcAPIService.PatchUserImageStatus(userImageId, media.UserImageStatus_PROCEED)
 	if err != nil {
 		return err
@@ -55,6 +55,10 @@ func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string, us
 		return err
 	}
 	err = p.voisingFcAPIService.PatchUserImageStatus(userImageId, media.UserImageStatus_COMPLETED)
+	if err != nil {
+		return err
+	}
+	err = p.voisingFcAPIService.CreateUserProfileImage(userImageId, userId)
 	if err != nil {
 		return err
 	}

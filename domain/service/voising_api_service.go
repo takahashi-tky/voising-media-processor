@@ -17,12 +17,30 @@ import (
 type VoisingFcAPIService interface {
 	PatchUserImageStatus(userImageId uint32, status media.UserImageStatus) error
 	PatchUserImageName(userImageId uint32, name string) error
+	CreateUserProfileImage(userImageId uint32, userId uint32) error
 	Close() error
 }
 
 type voisingFcAPIService struct {
 	client media.MediaClient
 	conn   *grpc.ClientConn
+}
+
+func (v *voisingFcAPIService) CreateUserProfileImage(userImageId uint32, userId uint32) error {
+	request := &media.CreateUserProfileImageRequest{
+		UserImageId: userImageId,
+		UserId:      userId,
+	}
+	ctx, cancel, err := getAuthContext()
+	defer cancel()
+	if err != nil {
+		return err
+	}
+	_, err = v.client.CreateUserProfileImage(ctx, request)
+	if err != nil {
+		return err
+	}
+	return err
 }
 
 func (v *voisingFcAPIService) PatchUserImageName(userImageId uint32, name string) error {

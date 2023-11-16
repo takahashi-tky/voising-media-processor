@@ -41,11 +41,19 @@ func main(_ context.Context, e event.Event) error {
 	if err != nil {
 		return fmt.Errorf("user-image-id is not number")
 	}
+	userIdStr, exists := objectMetadata["user-id"]
+	if !exists {
+		return fmt.Errorf("user-id is not exists")
+	}
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		return fmt.Errorf("user-id is not number")
+	}
 
 	switch {
 	case strings.HasPrefix(gcsEvent.Name, "profiles"):
 		profileImageUserCase := usecase.NewProfileImageUseCase(gcsService, imagickService, voisingFcAPIService)
-		err := profileImageUserCase.ProfileImageProcess(gcsEvent.Bucket, gcsEvent.Name, uint32(userImageId))
+		err := profileImageUserCase.ProfileImageProcess(gcsEvent.Bucket, gcsEvent.Name, uint32(userImageId), uint32(userId))
 		if err != nil {
 			return fmt.Errorf("profile image process error: %v", err)
 		}

@@ -25,6 +25,7 @@ const (
 	Media_PostUserReportContentImage_FullMethodName = "/media.Media/PostUserReportContentImage"
 	Media_PatchUserImageStatus_FullMethodName       = "/media.Media/PatchUserImageStatus"
 	Media_PathUserImageName_FullMethodName          = "/media.Media/PathUserImageName"
+	Media_CreateUserProfileImage_FullMethodName     = "/media.Media/CreateUserProfileImage"
 )
 
 // MediaClient is the client API for Media service.
@@ -36,6 +37,7 @@ type MediaClient interface {
 	PostUserReportContentImage(ctx context.Context, in *PostUserReportContentImageRequest, opts ...grpc.CallOption) (*PostUserReportContentImageResponse, error)
 	PatchUserImageStatus(ctx context.Context, in *PatchUserImageStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	PathUserImageName(ctx context.Context, in *PatchUserImageNameRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateUserProfileImage(ctx context.Context, in *CreateUserProfileImageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type mediaClient struct {
@@ -91,6 +93,15 @@ func (c *mediaClient) PathUserImageName(ctx context.Context, in *PatchUserImageN
 	return out, nil
 }
 
+func (c *mediaClient) CreateUserProfileImage(ctx context.Context, in *CreateUserProfileImageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Media_CreateUserProfileImage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MediaServer is the server API for Media service.
 // All implementations must embed UnimplementedMediaServer
 // for forward compatibility
@@ -100,6 +111,7 @@ type MediaServer interface {
 	PostUserReportContentImage(context.Context, *PostUserReportContentImageRequest) (*PostUserReportContentImageResponse, error)
 	PatchUserImageStatus(context.Context, *PatchUserImageStatusRequest) (*emptypb.Empty, error)
 	PathUserImageName(context.Context, *PatchUserImageNameRequest) (*emptypb.Empty, error)
+	CreateUserProfileImage(context.Context, *CreateUserProfileImageRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedMediaServer()
 }
 
@@ -121,6 +133,9 @@ func (UnimplementedMediaServer) PatchUserImageStatus(context.Context, *PatchUser
 }
 func (UnimplementedMediaServer) PathUserImageName(context.Context, *PatchUserImageNameRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PathUserImageName not implemented")
+}
+func (UnimplementedMediaServer) CreateUserProfileImage(context.Context, *CreateUserProfileImageRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUserProfileImage not implemented")
 }
 func (UnimplementedMediaServer) mustEmbedUnimplementedMediaServer() {}
 
@@ -225,6 +240,24 @@ func _Media_PathUserImageName_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Media_CreateUserProfileImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserProfileImageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MediaServer).CreateUserProfileImage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Media_CreateUserProfileImage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MediaServer).CreateUserProfileImage(ctx, req.(*CreateUserProfileImageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Media_ServiceDesc is the grpc.ServiceDesc for Media service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -251,6 +284,10 @@ var Media_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PathUserImageName",
 			Handler:    _Media_PathUserImageName_Handler,
+		},
+		{
+			MethodName: "CreateUserProfileImage",
+			Handler:    _Media_CreateUserProfileImage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
