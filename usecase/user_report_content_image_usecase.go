@@ -6,6 +6,7 @@ import (
 	"irelove.ireisu.com/api/proto/gen/media"
 	"irelove.ireisu.com/domain/service"
 	"os"
+	"strings"
 )
 
 type UserReportContentImageUseCase interface {
@@ -51,7 +52,8 @@ func (u *userReportContentImageUseCase) UserReportContentImageProcess(bucket str
 	if err != nil {
 		return err
 	}
-	err = u.voisingFcAPIService.PatchUserImageName(userImageId, name+"."+objectFormat)
+	objectName := strings.Split(name, "/")[len(strings.Split(name, "/"))]
+	err = u.voisingFcAPIService.PatchUserImageName(userImageId, objectName+"."+objectFormat)
 	if err != nil {
 		return err
 	}
