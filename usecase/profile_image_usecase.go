@@ -6,6 +6,7 @@ import (
 	"irelove.ireisu.com/api/proto/gen/media"
 	"irelove.ireisu.com/domain/service"
 	"os"
+	"strings"
 )
 
 const (
@@ -46,7 +47,8 @@ func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string, us
 	if err != nil {
 		return err
 	}
-	err = p.voisingFcAPIService.PatchUserImageName(userImageId, name+"."+ProfileImageFormat)
+	objectName := strings.Split(name, "/")[len(strings.Split(name, "/"))]
+	err = p.voisingFcAPIService.PatchUserImageName(userImageId, objectName+"."+ProfileImageFormat)
 	if err != nil {
 		return err
 	}
