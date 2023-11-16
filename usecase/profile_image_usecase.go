@@ -47,7 +47,7 @@ func (p *profileImageUseCase) ProfileImageProcess(bucket string, name string, us
 	if err != nil {
 		return err
 	}
-	objectName := strings.Split(name, "/")[len(strings.Split(name, "/"))]
+	objectName := strings.Split(name, "/")[len(strings.Split(name, "/"))-1]
 	err = p.voisingFcAPIService.PatchUserImageName(userImageId, objectName+"."+ProfileImageFormat)
 	if err != nil {
 		return err

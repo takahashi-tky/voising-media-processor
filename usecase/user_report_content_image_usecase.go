@@ -52,7 +52,7 @@ func (u *userReportContentImageUseCase) UserReportContentImageProcess(bucket str
 	if err != nil {
 		return err
 	}
-	objectName := strings.Split(name, "/")[len(strings.Split(name, "/"))]
+	objectName := strings.Split(name, "/")[len(strings.Split(name, "/"))-1]
 	err = u.voisingFcAPIService.PatchUserImageName(userImageId, objectName+"."+objectFormat)
 	if err != nil {
 		return err
